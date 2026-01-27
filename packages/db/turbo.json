@@ -1,0 +1,21 @@
+{
+  "extends":["//"],
+  "tasks": {
+    "build":{
+      "dependsOn":["db:generate"]
+    },
+    "dev":{
+      "dependsOn":["db:generate"]
+    },
+    "db:generate": {
+      "cache": false
+    },
+    "db:migrate": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:deploy": {
+      "cache": false
+    }
+  }
+}

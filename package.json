@@ -1,5 +1,6 @@
 {
   "name": "xforces",
+  "type":"module",
   "private": true,
   "scripts": {
     "build": "turbo run build",

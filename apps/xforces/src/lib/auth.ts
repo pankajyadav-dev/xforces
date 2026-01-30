@@ -3,7 +3,7 @@ import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import argon2 from "argon2";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { Prisma, prisma } from "@repo/db";
+import { prisma } from "@repo/db";
 import { v4 as uuid } from "uuid";
 import { loginSchema } from "./validator/login";
 
@@ -26,13 +26,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   session: {
     strategy: "jwt",
+    maxAge: 15 * 24 * 60 * 60,
+    updateAge: 5 * 24 * 60 * 60
+  },
+  jwt: {
+    maxAge: 7 * 24 * 60 * 60
   },
   providers: [
     Google({
       allowDangerousEmailAccountLinking: true,
       authorization: {
         params: {
-          prompt: "consent",
+          prompt: "select_account",
           access_type: "offline",
           response_type: "code",
         },
@@ -48,6 +53,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
     Credentials({
+      name: "email",
       credentials: {
         email: {
           label: "email",
@@ -59,21 +65,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
       },
       authorize: async (credentials) => {
-        const rawCredentials = 
-            credentials instanceof FormData 
-              ? Object.fromEntries(credentials.entries()) 
-              : credentials;
-        console.log("credential ------------------\n",rawCredentials);
         
-        const userCredentials = loginSchema.safeParse(rawCredentials);
-        if(!userCredentials.success){
+        const userCredentials = loginSchema.safeParse(credentials);
+        if (!userCredentials.success) {
           throw new CredentialsSignin("Invalid credentials parsign failed");
         }
         console.log(userCredentials.data);
-        // const pwHash = await argon2.hash(credentials.password as string);
         let user = await prisma.user.findFirst({
           where: {
-            email: userCredentials.data?.email as string,
+            email: userCredentials.data.email,
           },
           select: {
             id: true,
@@ -83,25 +83,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             tokenVersion: true
           },
         });
-        console.log(user);
+        // console.log(user);
         if (!user) {
           throw new CredentialsSignin("Invalid credentials");
-          // return;
+        }
+        console.log(user.password);
+        if (!user.password) {
+          throw new CredentialsSignin("Reset the Pasword");
         }
         const isValidPassword = await argon2.verify(
-          user?.password as string,
-          userCredentials.data?.password as string,
+          user.password as string,
+          userCredentials.data.password
         );
         if (!isValidPassword) {
-          throw new CredentialsSignin("Invalid Password");
-          // return;
+          throw new CredentialsSignin("Invalid credentials");
         }
         return user;
       },
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       if (account?.provider == "google") {
         const existedUser = await prisma.user.findFirst({
           where: {
@@ -112,43 +114,39 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return `/verifyEmail?email=${user.email}`;
         }
       }
-      if (user) {
-        const isUser = await prisma.user.findFirst({
-          where: {
-            id: user.id,
-          },
-          select: {
-            id: true,
-          },
-        });
-        if (isUser) {
-          const newVerison = uuid();
-          await prisma.user.update({
-            where: {
-              id: user.id,
-            },
-            data: {
-              tokenVersion: newVerison,
-            },
-          });
-        }
-      }
       return true;
     },
-    async jwt({ token, user }) {
-      if (user) {
-        console.log("jwt----------------user---------------\n", user);
-        const dbUser = await prisma.user.findFirst({
+    async jwt({ token, user, trigger }) {
+      if (user && trigger == "signIn") {
+        const newVerison = uuid();
+        await prisma.user.update({
           where: {
             id: user.id,
           },
-          select: {
-            tokenVersion: true,
-            id: true,
+          data: {
+            tokenVersion: newVerison,
           },
         });
-        token.id = dbUser?.id;
-        token.tokenVersion = dbUser?.tokenVersion;
+        token.id = user?.id;
+        token.tokenVersion = newVerison;
+      }
+      console.log("user id-----------");
+      console.log(token.id);
+      if (!token.id) {
+        console.log("return nulll for jwt")
+        return null;
+      }
+      const dbUser = await prisma.user.findUnique({
+        where: {
+          id: token.id as string
+        },
+        select: {
+          tokenVersion: true,
+        }
+      })
+      if (token.tokenVersion !== dbUser?.tokenVersion) {
+        console.log("return nulll for jwt")
+        return null;
       }
       console.log(token);
       return token;
@@ -156,11 +154,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       console.log(token);
 
-      if (!token.tokenVersion && !token.id) {
+      if (!token.tokenVersion || !token.id) {
+        console.log("return null from sessiion  token verison null");
         return null as any;
       }
 
-      const dbUser = await prisma.user.findFirst({
+      const dbUser = await prisma.user.findUnique({
         where: {
           id: token.id as string,
         },
@@ -168,16 +167,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           tokenVersion: true,
         },
       });
+      console.log("-------------------token-------------\n");
+      console.log(dbUser);
+      console.log(token);
       if (!dbUser || token.tokenVersion !== dbUser.tokenVersion) {
+        console.log("return null from sessiion  token verison missmatch");
         return null as any;
       }
-      console.log(session);
+      console.log("-----------------------session-----------\n", session);
       return session;
     },
+    async redirect({ url, baseUrl }) {
+          if (url.startsWith("/")) return `${baseUrl}${url}`;
+          else if (new URL(url).origin === baseUrl) return url;
+          return baseUrl;
+        },
   },
   pages: {
-    // signIn: "/signin",
+    signIn: "/signin",
     error: "/auth-error",
-    // newUser: "/dashboard",
+    // newUser: "/dashboard,
   },
 });

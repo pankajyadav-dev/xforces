@@ -68,9 +68,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         
         const userCredentials = loginSchema.safeParse(credentials);
         if (!userCredentials.success) {
-          throw new CredentialsSignin("Invalid credentials parsign failed");
+          throw new Error("Invalid credentials parsign failed");
         }
-        console.log(userCredentials.data);
         let user = await prisma.user.findFirst({
           where: {
             email: userCredentials.data.email,
@@ -83,20 +82,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             tokenVersion: true
           },
         });
-        // console.log(user);
         if (!user) {
-          throw new CredentialsSignin("Invalid credentials");
+          return null;
+          // throw new Error("Invalid credentials");
         }
-        console.log(user.password);
         if (!user.password) {
-          throw new CredentialsSignin("Reset the Pasword");
+          return null;
+          // throw new Error("Reset the Pasword");
         }
+        try{
         const isValidPassword = await argon2.verify(
           user.password as string,
           userCredentials.data.password
         );
-        if (!isValidPassword) {
-          throw new CredentialsSignin("Invalid credentials");
+        if(!isValidPassword){
+          return null;
+          // throw new Error("invclaid password");
+        }
+        }catch(err){
+          return null
+          // throw new Error("Invalid password");
         }
         return user;
       },
@@ -130,10 +135,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.id = user?.id;
         token.tokenVersion = newVerison;
       }
-      console.log("user id-----------");
-      console.log(token.id);
       if (!token.id) {
-        console.log("return nulll for jwt")
         return null;
       }
       const dbUser = await prisma.user.findUnique({
@@ -145,36 +147,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       })
       if (token.tokenVersion !== dbUser?.tokenVersion) {
-        console.log("return nulll for jwt")
         return null;
       }
-      console.log(token);
       return token;
     },
+    
     async session({ session, token }) {
-      console.log(token);
-
       if (!token.tokenVersion || !token.id) {
-        console.log("return null from sessiion  token verison null");
         return null as any;
       }
-
-      const dbUser = await prisma.user.findUnique({
-        where: {
-          id: token.id as string,
-        },
-        select: {
-          tokenVersion: true,
-        },
-      });
-      console.log("-------------------token-------------\n");
-      console.log(dbUser);
-      console.log(token);
-      if (!dbUser || token.tokenVersion !== dbUser.tokenVersion) {
-        console.log("return null from sessiion  token verison missmatch");
-        return null as any;
-      }
-      console.log("-----------------------session-----------\n", session);
       return session;
     },
     async redirect({ url, baseUrl }) {

@@ -1,14 +1,5 @@
 {
   "name": "xforces",
-  "type":"module",
-  "private": true,
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
-  },
   "devDependencies": {
     "prettier": "^3.7.4",
     "turbo": "^2.7.6",
@@ -18,8 +9,20 @@
     "node": ">=18"
   },
   "packageManager": "bun@1.3.5",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types"
+  },
+  "type": "module",
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@monaco-editor/react": "^4.7.0"
+  }
 }

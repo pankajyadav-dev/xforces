@@ -2,14 +2,16 @@
 
 import React, { useRef } from 'react'
 import Editor, { OnChange, Monaco } from '@monaco-editor/react'
-
-export default function CodeEditor() {
+import { EditorLang } from '@/types/editor'
+interface CodeEditorSchema{
+  language: EditorLang,
+  content: string,
+  editorRef: React.RefObject<any>
+}
+export default function CodeEditor({language,content,editorRef}:CodeEditorSchema) {
   const handleEditorChange: OnChange = (value, event) => {
     console.log('Current code:', value)
   }
-
-  const editorRef = useRef<any>(null)
-
   function handleEditorDidMount(editor: any, monaco: Monaco) {
     editorRef.current = editor
   }
@@ -18,8 +20,8 @@ export default function CodeEditor() {
     <div className="h-[500px] w-full border border-gray-700 rounded-lg overflow-hidden">
       <Editor
         height="100%"
-        defaultLanguage="javascript"
-        defaultValue="// Write your code here"
+        defaultLanguage={language}
+        defaultValue={content}
         theme="vs-dark"
         onChange={handleEditorChange}
         onMount={handleEditorDidMount}

@@ -14,6 +14,7 @@
     "@repo/db": "*",
     "@repo/ui": "*",
     "argon2": "^0.44.0",
+    "ioredis": "^5.9.2",
     "next": "16.1.5",
     "next-auth": "^5.0.0-beta.30",
     "react": "19.2.3",

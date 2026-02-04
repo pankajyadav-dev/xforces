@@ -1,13 +1,13 @@
 {
   "extends":"@repo/typescript-config/nextjs.json",
   "compilerOptions": {
-    
+    "composite": false,
+    "declaration": false,
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "jsx": "preserve",
     "paths": {
       "@/*": ["./src/*"]
     }
@@ -16,6 +16,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
+    "**/*.d.ts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"

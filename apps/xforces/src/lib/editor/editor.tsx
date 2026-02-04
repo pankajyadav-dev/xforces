@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useRef } from 'react'
+import  { useRef } from 'react'
 import Editor, { OnChange, Monaco } from '@monaco-editor/react'
 import { EditorLang } from '@/types/editor'
-interface CodeEditorSchema{
+export interface CodeEditorSchema{
   language: EditorLang,
   content: string,
   editorRef: React.RefObject<any>

@@ -1,7 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import redis from "@/lib/redis";
-export async function POST(request:Request&{body:{code:string}}){
-  const body = await request.json() ;
+interface submitSchema{
+  code: string
+}
+export async function POST(request:NextRequest){
+  const body: submitSchema = await request.json() ;
   const {code } = body;
   const taskId = await redis.xadd(
     "tasks", "*", 

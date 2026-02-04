@@ -35,6 +35,9 @@
     },
     "apps/engine": {
       "name": "engine",
+      "dependencies": {
+        "ioredis": "^5.9.2",
+      },
       "devDependencies": {
         "@repo/typescript-config": "*",
         "@types/bun": "latest",

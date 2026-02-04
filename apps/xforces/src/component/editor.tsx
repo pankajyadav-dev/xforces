@@ -11,11 +11,11 @@ const MonacoEditor = dynamic(() => import('@/lib/editor/editor'), {
  
  
 
- export default function editorpage(codeEditorParam:CodeEditorSchema){
+ export default function editorpage(codeEditorParam:Omit<CodeEditorSchema,"editorRef">){
    const editorRef = useRef<any>(null);
    return (
      <>
-       <MonacoEditor content={codeEditorParam.content} editorRef={codeEditorParam.editorRef} language={codeEditorParam.language}/>
+       <MonacoEditor content={codeEditorParam.content} editorRef={editorRef} language={codeEditorParam.language} />
        <button onClick={()=>SubmitCode({code:editorRef.current.getValue()})}>submit</button>
      </>
    )

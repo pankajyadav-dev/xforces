@@ -7,6 +7,9 @@ import { prisma } from "@repo/db";
 import { v4 as uuid } from "uuid";
 import { loginSchema } from "./validator/login";
 import type { NextAuthResult } from "next-auth";
+
+
+
 const db_adapter = PrismaAdapter(prisma);
 const AuthConfig : NextAuthConfig = {
     adapter: {
@@ -169,9 +172,6 @@ const AuthConfig : NextAuthConfig = {
       error: "/auth-error",
       // newUser: "/dashboard,
 }};
-export const authResult: NextAuthResult = NextAuth(AuthConfig);
-// export const { handlers, signIn, signOut, auth }: NextAuthResult = NextAuth(AuthConfig);
-export const handlers = authResult.handlers;
-export const signIn = authResult.signIn;
-export const signOut = authResult.signOut;
-export const auth = authResult.auth;
+
+
+export const { handlers, signIn, signOut, auth }: NextAuthResult = NextAuth(AuthConfig);

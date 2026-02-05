@@ -16,7 +16,11 @@ const MonacoEditor = dynamic(() => import('@/lib/editor/editor'), {
    return (
      <>
        <MonacoEditor content={codeEditorParam.content} editorRef={editorRef} language={codeEditorParam.language} />
-       <button onClick={()=>SubmitCode({code:editorRef.current.getValue()})}>submit</button>
+       <button onClick={async()=>{
+        const id = await  SubmitCode({code:editorRef.current.getValue()});
+        console.log("id");
+        console.log(id);
+       }}>submit</button>
      </>
    )
  }

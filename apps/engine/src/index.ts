@@ -1,11 +1,11 @@
 import redis from "./lib/redis";
-const GROUP_NAME = 'my_group';
-const CONSUMER_NAME = 'worker_1'; // Use process.env.HOSTNAME for uniqueness
+const GROUP_NAME = 'worker_group';
+const CONSUMER_NAME = process.env.CONSUMER_NAME || 'worker_1'// Use process.env.HOSTNAME for uniqueness
 const STREAM_KEY = 'tasks';
 async function setupGroup() {
   try {
     // MKSTREAM ensures the 'tasks' key is created if it doesn't exist
-    await redis.xgroup('CREATE', 'tasks', 'worker_group', '0', 'MKSTREAM');
+    await redis.xgroup('CREATE', STREAM_KEY, GROUP_NAME, '0', 'MKSTREAM');
     console.log("worker group created.");
   } catch (err: any) {
     if (err.message.includes('BUSYGROUP')) {

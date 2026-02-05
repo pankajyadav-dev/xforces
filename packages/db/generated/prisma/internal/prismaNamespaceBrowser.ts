@@ -53,6 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Account: 'Account',
   VerificationToken: 'VerificationToken',
+  Questions: 'Questions',
+  Submission: 'Submission',
   User: 'User'
 } as const
 
@@ -98,6 +100,29 @@ export const VerificationTokenScalarFieldEnum = {
 } as const
 
 export type VerificationTokenScalarFieldEnum = (typeof VerificationTokenScalarFieldEnum)[keyof typeof VerificationTokenScalarFieldEnum]
+
+
+export const QuestionsScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  input: 'input',
+  output: 'output',
+  createdAt: 'createdAt'
+} as const
+
+export type QuestionsScalarFieldEnum = (typeof QuestionsScalarFieldEnum)[keyof typeof QuestionsScalarFieldEnum]
+
+
+export const SubmissionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  status: 'status',
+  remark: 'remark',
+  submitedAt: 'submitedAt'
+} as const
+
+export type SubmissionScalarFieldEnum = (typeof SubmissionScalarFieldEnum)[keyof typeof SubmissionScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {

@@ -5,8 +5,8 @@ const STREAM_KEY = 'tasks';
 async function setupGroup() {
   try {
     // MKSTREAM ensures the 'tasks' key is created if it doesn't exist
-    await redis.xgroup('CREATE', 'tasks', 'my_group', '0', 'MKSTREAM');
-    console.log("Consumer group created.");
+    await redis.xgroup('CREATE', 'tasks', 'worker_group', '0', 'MKSTREAM');
+    console.log("worker group created.");
   } catch (err: any) {
     if (err.message.includes('BUSYGROUP')) {
       console.log("Group already exists, skipping creation.");
@@ -44,9 +44,7 @@ async function startWorker() {
       // for (const [id, fields] of messages) {
       //   console.log(`Worker ${CONSUMER_NAME} processing: ${id}`);
         
-      //   // 1. DO YOUR WORK HERE
-      //   await processTask(fields);
-
+      await new Promise((resolve)=>setTimeout(resolve,5000));
       //   // 2. ACKNOWLEDGE (Crucial!)
       //   // This tells Redis the task is finished and can be removed from the "Pending" list.
         await redis.xack(STREAM_KEY, GROUP_NAME, id);
@@ -57,12 +55,6 @@ async function startWorker() {
       console.error("Worker Error:", err);
     }
   }
-}
-
-async function processTask(fields: string[]) {
-        // Logic to handle your task
-    console.log(fields);
-    await new Promise((resolve)=> setTimeout(resolve,2000));
 }
 
 startWorker();

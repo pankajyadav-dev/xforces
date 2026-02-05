@@ -10,5 +10,7 @@
  */
 export type * from './models/Account'
 export type * from './models/VerificationToken'
+export type * from './models/Questions'
+export type * from './models/Submission'
 export type * from './models/User'
 export type * from './commonInputTypes'

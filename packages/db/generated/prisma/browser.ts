@@ -28,6 +28,16 @@ export type Account = Prisma.AccountModel
  */
 export type VerificationToken = Prisma.VerificationTokenModel
 /**
+ * Model Questions
+ * 
+ */
+export type Questions = Prisma.QuestionsModel
+/**
+ * Model Submission
+ * 
+ */
+export type Submission = Prisma.SubmissionModel
+/**
  * Model User
  * 
  */

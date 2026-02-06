@@ -1,4 +1,4 @@
 {
   "extends": "@repo/typescript-config/base.json",
-  "include": ["src","generated/prisma/*/**.ts"],
+  "include": ["src/**.ts","generated/prisma/*/**.ts","generated/prisma/**.ts"],
 }

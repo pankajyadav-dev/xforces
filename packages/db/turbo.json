@@ -4,8 +4,13 @@
     "build":{
       "dependsOn":["db:generate"]
     },
+    "db:seed":{
+      "dependsOn":["db:generate"],
+      "cache":false
+    },
     "dev":{
-      "dependsOn":["db:generate"]
+      "dependsOn":["db:seed"],
+      "cache":false
     },
     "db:generate": {
       "cache": false

@@ -1,28 +1,18 @@
+import Navbar from "@/component/navbar";
 import { auth, signIn, signOut } from "@/lib/auth";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 
 export default async function Home() {
-  const session = await auth();
-  if(!session){
-    return redirect("/signup");
-  }
-  console.log("application session\n",session);
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <div>{session?.user ?"user is signed in":"no user found"}</div>
-      <form action={async()=>{
-        "use server"
-        await signOut();
-      }}>
-        <button type="submit">sign out</button>
-      </form>
-     <form action={async()=>{
-       "use server"
-       await signIn();
-     }}>
-       <button type="submit">sign in</button>
-     </form>
+    <>
+    <Navbar/>
+    <div className="flex flex-col min-h-screen items-center justify-center bg-green-800 font-sans dark:bg-green-800">
+      <div>Welcome to the Xforces</div>
+     <Link href={'/compiler'}>Compiler</Link> 
+     <Link href={'/problem'}>Problems</Link> 
     </div>
+    </>
   );
 }

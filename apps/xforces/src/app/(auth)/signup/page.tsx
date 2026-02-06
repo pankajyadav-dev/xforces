@@ -1,4 +1,3 @@
-
 import { signIn, signOut } from "@/lib/auth";
 import { prisma } from "@repo/db"
 import argon2  from "argon2"

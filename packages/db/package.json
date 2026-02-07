@@ -10,7 +10,7 @@
       "db:seed":"bun prisma/seed.ts"
   },
   "devDependencies": {
-    "@repo/typescript-config": "*",
+    "@repo/typescript-config": "workspace:*",
     "@types/bun": "latest",
     "@types/pg": "^8.16.0",
     "prisma": "^7.3.0"

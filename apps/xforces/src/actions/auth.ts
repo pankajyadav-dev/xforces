@@ -9,7 +9,6 @@ import { redirect } from "next/navigation";
 
 export  const SignInGoogle = async():Promise<void>=>{
   try{
-  await signOut({redirect:false});
   await signIn("google",{redirect: true,redirectTo:"/"});
   }catch(err){
     if(err instanceof AuthError){
@@ -22,7 +21,6 @@ export  const SignInGoogle = async():Promise<void>=>{
 
 export  const SignInCredential = async(credentials:FormData):Promise<void>=>{
  try{
-  await signOut();
   const email = credentials.get("email");
   const password = credentials.get("password");
   await signIn("credentials",{email,password,redirectTo:"/"});

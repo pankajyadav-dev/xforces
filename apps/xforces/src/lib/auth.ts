@@ -12,6 +12,7 @@ import type { NextAuthResult } from "next-auth";
 
 const db_adapter = PrismaAdapter(prisma);
 const AuthConfig : NextAuthConfig = {
+  trustHost:true,
     adapter: {
       ...db_adapter,
       createUser(user) {
@@ -74,7 +75,7 @@ const AuthConfig : NextAuthConfig = {
             throw new Error("Invalid credentials parsign failed");
           }
           let user = await prisma.user.findFirst({
-            where: {
+            where: {i
               email: userCredentials.data.email,
             },
             select: {

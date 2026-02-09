@@ -1,7 +1,8 @@
 import redis from "./lib/redis";
+import {SubmissionPayload} from "@repo/types"
 const GROUP_NAME = 'worker_group';
 const CONSUMER_NAME = process.env.CONSUMER_NAME || 'worker_1'// Use process.env.HOSTNAME for uniqueness
-const STREAM_KEY = 'tasks';
+const STREAM_KEY =  process.env.STREAM_KEY || 'tasks';
 async function setupGroup() {
   try {
     // MKSTREAM ensures the 'tasks' key is created if it doesn't exist
@@ -24,7 +25,7 @@ async function startWorker() {
       const results = await redis.xreadgroup(
         'GROUP', GROUP_NAME, CONSUMER_NAME,
         'COUNT', 1,
-        'BLOCK', 5000,
+        'BLOCK', 2000,
         'STREAMS', STREAM_KEY, '>'
       );
 

@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  transpilePackages:["@repo/db"],
+  output: "standalone",
+  transpilePackages: ["@repo/db"],
   reactCompiler: true,
 };
 

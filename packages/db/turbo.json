@@ -5,7 +5,7 @@
       "dependsOn":["db:generate"]
     },
     "db:seed":{
-      "dependsOn":["db:generate"],
+      "dependsOn":["db:generate","db:migrate"],
       "cache":false
     },
     "dev":{
@@ -16,8 +16,7 @@
       "cache": false
     },
     "db:migrate": {
-      "cache": false,
-      "persistent": true
+      "cache": false
     },
     "db:deploy": {
       "cache": false

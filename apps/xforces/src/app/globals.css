@@ -1,26 +1,113 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: #1a1a1a;
+  --color-surface: #242424;
+  --color-surface-hover: #2e2e2e;
+  --color-border: #3a3a3a;
+  --color-text: #e0e0e0;
+  --color-text-muted: #888888;
+  --color-accent: #4ecca3;
+  --color-accent-hover: #6ee6bb;
+  --color-success: #2cbb5d;
+  --color-success-hover: #3dd06e;
+  --color-danger: #ef4743;
+  --color-danger-hover: #ff5f5b;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Markdown content styling */
+.markdown-content h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: #ffffff;
+}
+
+.markdown-content h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+}
+
+.markdown-content h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+}
+
+.markdown-content p {
+  margin-bottom: 0.75rem;
+  line-height: 1.7;
+  color: var(--color-text);
+}
+
+.markdown-content code {
+  background-color: #2e2e2e;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-family: var(--font-mono), monospace;
+  color: var(--color-accent);
+}
+
+.markdown-content pre {
+  background-color: #1a1a1a;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+  border: 1px solid var(--color-border);
+}
+
+.markdown-content pre code {
+  background: none;
+  padding: 0;
+  color: var(--color-text);
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content ul {
+  list-style-type: disc;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+}
+
+.markdown-content li {
+  margin-bottom: 0.25rem;
+  line-height: 1.6;
+}
+
+.markdown-content strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.markdown-content blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: 1rem;
+  margin-bottom: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 1.5rem 0;
 }

@@ -1,0 +1,11 @@
+FROM oven/bun:alpine AS base
+RUN apk add --no-cache nodejs
+RUN apk add --no-cache python3 make g++
+
+WORKDIR /app
+
+COPY . .
+RUN rm -rf /app/apps/xforces
+RUN bun install
+
+CMD ["bun","dev"]

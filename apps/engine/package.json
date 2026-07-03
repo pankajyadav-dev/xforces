@@ -4,17 +4,22 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev":"bun ./src/index.ts"
+    "dev": "bun run --watch --env-file=.env ./src/index.ts",
+    "build": "bun build ./src/index.ts --outdir dist --target bun --external cpu-features",
+    "start": "bun ./dist/index.js"
   },
   "devDependencies": {
-    "@types/bun": "latest",
+    "@repo/db": "workspace:*",
+    "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@repo/types":"workspace:*"
+    "@types/bun": "latest",
+    "@types/dockerode": "^4.0.1"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
+    "dockerode": "^4.0.9",
     "ioredis": "^5.9.2"
   }
 }

@@ -1,7 +1,6 @@
 import NextAuth, { CredentialsSignin, NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
-import argon2 from "argon2";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@repo/db";
 import { v4 as uuid } from "uuid";
@@ -45,6 +44,8 @@ const AuthConfig: NextAuthConfig = {
         },
       },
       profile(profile) {
+        // console.log("profile");
+        // console.log(profile);
         return {
           id: profile.sub,
           name: profile.name,
@@ -71,7 +72,7 @@ const AuthConfig: NextAuthConfig = {
         if (!userCredentials.success) {
           throw new Error("Invalid credentials parsign failed");
         }
-        let user = await prisma.user.findFirst({
+        const user = await prisma.user.findFirst({
           where: {
             email: userCredentials.data.email,
           },
@@ -83,26 +84,23 @@ const AuthConfig: NextAuthConfig = {
             tokenVersion: true,
           },
         });
+        console.log(user);
         if (!user) {
           return null;
-          // throw new Error("Invalid credentials");
         }
         if (!user.password) {
           return null;
-          // throw new Error("Reset the Pasword");
         }
         try {
-          const isValidPassword = await argon2.verify(
-            user.password as string,
+          const isValidPassword = await Bun.password.verify(
             userCredentials.data.password,
+            user.password as string,
           );
           if (!isValidPassword) {
             return null;
-            // throw new Error("invclaid password");
           }
-        } catch (err) {
-          return null;
-          // throw new Error("Invalid password");
+        } catch (err: any) {
+          return err.message || null;
         }
         return user;
       },
@@ -123,7 +121,7 @@ const AuthConfig: NextAuthConfig = {
       return true;
     },
     async jwt({ token, user, trigger }) {
-      if (user && trigger == "signIn") {
+      if (user && (trigger == "signIn" || trigger == "signUp")) {
         const newVerison = uuid();
         await prisma.user.update({
           where: {
@@ -133,8 +131,10 @@ const AuthConfig: NextAuthConfig = {
             tokenVersion: newVerison,
           },
         });
+
         token.id = user?.id;
         token.tokenVersion = newVerison;
+        return token;
       }
       if (!token.id) {
         return null;
@@ -157,6 +157,7 @@ const AuthConfig: NextAuthConfig = {
       if (!token.tokenVersion || !token.id) {
         return null as any;
       }
+      session.user.id = token.id as string;
       return session;
     },
     async redirect({ url, baseUrl }) {

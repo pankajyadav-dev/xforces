@@ -1,0 +1,7 @@
+model TestCase {
+  id        Int       @id() @default(autoincrement())
+  input     String
+  output    String
+  problemId Int
+  problem   Problems  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}

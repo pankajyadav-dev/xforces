@@ -1,1 +1,1 @@
-export * from "./submissionpayload"
+export * from "./editor";

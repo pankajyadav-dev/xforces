@@ -1,0 +1,8 @@
+model ProblemCode {
+  id         Int       @id() @default(autoincrement())
+  classcode  String
+  maincode   String
+  problemId  Int
+  language   String  
+  problem    Problems  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,72 @@
+services:
+  xforces:
+    container_name: xforces-dev
+    build:
+      context: .
+      dockerfile: apps/xforces/Dockerfile.dev
+    restart: always
+    environment:
+      - DATABASE_URL=postgres://virat:virat123@postgres:5432/xforcesdb
+      - REDIS_URL=redis://redisdb:6379/1
+    volumes:
+      - ./apps/xforces:/app/apps/xforces
+      # - /app/apps/xforces/node_modules
+      # - /app/apps/xforces/.next
+      # - /app/node_modules
+      - ./packages:/app/packages
+      # - /app/packages/db/node_modules 
+    ports:
+      - "3000:3000" 
+    depends_on:
+      - postgres
+      - redis
+
+  # engine:
+  #   container_name: engine-dev
+  #   build:
+  #     context: .
+  #     dockerfile: apps/engine/Dockerfile.dev
+  #   restart: always
+  #   environment:
+  #     - DATABASE_URL=postgres://virat:virat123@postgres:5432/xforcesdb
+  #     - REDIS_URL=redis://redisdb:6379/1
+  #     - CONSUMER_NAME=worker_1
+  #     - STREAM_KEY=tasks
+  #     - CONTAINER_NAME=viratubuntu/xforces-runner:latest
+  #     - MAX_OUTPUT_SIZE=100*1024
+  #   volumes:
+  #     - ./apps/engine:/app/apps/engine
+  #     # - /app/apps/engine/node_modules
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ./packages/db/:/app/packages/db/
+  #     # - /app/packages/db/node_modules 
+  #     # - /app/node_modules 
+  #   depends_on:
+  #     - redis
+  #     - postgres
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: virat
+      POSTGRES_PASSWORD: virat123
+      POSTGRES_DB: xforcesdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:alpine
+    container_name: redisdb
+    restart: always
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
+  redis_data:

@@ -1,18 +1,56 @@
 import { SignInCredential } from "@/actions/auth";
+import { SubmitButton } from "@/component/button/signupbutton";
 import SignInGoogle from "@/component/signingoogle";
+import { auth } from "@/lib/auth";
+import Link from "next/link";
+
 export default async function signin() {
+  const session = await auth();
+
   return (
-    <div className="flex flex-col justify-center bg-green-900 min-h-screen">
-      <div className="flex flex-col w-fit mx-auto justify-center items-center gap-6 border-2 rounded-3xl p-25 ">
-        <div className="font-bold text-xl">Signin Page</div>
-        <SignInGoogle classname="border-2 rounded-xl p-2"/>
-        <div className="border-1 w-full"></div>
-        <form action={SignInCredential} className="flex flex-col gap-2">
-          <h1 className="font-bold mx-auto ">Sign in with email</h1>
-          <input className="border-2 rounded-xl px-2 py-1" type="email" placeholder="Email" name="email" />
-          <input className="border-2 rounded-xl px-2 py-1" type="password" placeholder="Password" name="password" />
-          <button className="border-2 rounded-xl px-2 py-1 " type="submit">Signin </button>
+    <div className="flex items-center justify-center min-h-screen px-4">
+      <div className="w-full max-w-sm bg-surface rounded-xl border border-border p-8">
+        <h1 className="text-2xl font-bold text-center mb-6">Sign In</h1>
+
+        <SignInGoogle />
+
+        <div className="flex items-center gap-3 my-6">
+          <div className="flex-1 h-px bg-border"></div>
+          <span className="text-text-muted text-sm">OR</span>
+          <div className="flex-1 h-px bg-border"></div>
+        </div>
+
+        <form action={SignInCredential} className="flex flex-col gap-4">
+          <input
+            className="w-full px-3 py-2.5 bg-background border border-border rounded-lg text-text placeholder-text-muted text-sm focus:outline-none focus:border-accent transition-colors"
+            type="email"
+            placeholder="Email"
+            name="email"
+          />
+          <input
+            className="w-full px-3 py-2.5 bg-background border border-border rounded-lg text-text placeholder-text-muted text-sm focus:outline-none focus:border-accent transition-colors"
+            type="password"
+            placeholder="Password"
+            name="password"
+          />
+          <SubmitButton content="SignIn" loading="Signing...." />
+          {/*<button
+            className="w-full py-2.5 bg-accent text-background font-semibold rounded-lg hover:bg-accent-hover transition-colors text-sm cursor-pointer"
+            type="submit"
+          >
+            Sign In
+          </button>*/}
         </form>
+
+        <p className="text-center text-text-muted text-sm mt-6">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/signup"
+            className="text-accent hover:text-accent-hover transition-colors"
+          >
+            Sign Up
+          </Link>
+        </p>
       </div>
     </div>
   );

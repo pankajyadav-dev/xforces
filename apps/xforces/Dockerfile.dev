@@ -1,0 +1,11 @@
+FROM oven/bun:alpine AS base
+WORKDIR /app
+RUN apk add --no-cache build-base python3
+COPY . .
+RUN rm -rf /app/apps/engine
+RUN bun install
+
+
+EXPOSE 3000
+
+CMD ["bun","dev"]

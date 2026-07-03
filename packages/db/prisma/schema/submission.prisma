@@ -1,8 +1,10 @@
 model Submission {
   id          String     @id @default(cuid())
+  problemid   Int
   userId      String 
   status      String
   remark      String
   submitedAt  DateTime   @default(now())
   user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problems     Problems @relation(fields: [problemid], references: [id], onDelete: Cascade)
 }
